@@ -1,7 +1,7 @@
 import urllib
 import datetime
 from sqlalchemy import *
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text,select
 from bs4 import BeautifulSoup
 from flask import Flask,render_template,request		
 							#import Flask and rendering module
@@ -55,9 +55,12 @@ def querydata():
 	
 	engine=create_engine('mysql://root:1234@localhost/test')
 	conn=engine.connect()
-	ing=conn.execute(text("SELECT stockItemCode from stock")
-	ing.fetchall()
-		return render_template('data.html',result=ing)
+	a="stockItemCode\tprice\tprice_change\ttime\n"
+	res=conn.execute("SELECT * FROM stock")
+	for data in res:
+		a+=(data['stockItemCode']+" \t"+data['price']+"\t"+data['price_change']+"\t"+str(data['time'])+"\n")
+		
+	return render_template('data.html',result=a)
 
 if __name__=='__main__':	#run app
 	app.debug = True 		#debug option
